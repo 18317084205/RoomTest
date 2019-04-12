@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
             public UserViewModel getViewModel() {
                 return new UserViewModel(App.appDatabase.userDao());
             }
-        },UserViewModel.class);
+        }, UserViewModel.class);
         adapter = new UserAdapter();
         viewDataBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         viewDataBinding.recyclerView.setAdapter(adapter);
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         viewModel.bindAllData();
     }
 
-
+    int age = 10;
     private void databaseSet() {
         viewDataBinding.button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +55,12 @@ public class MainActivity extends AppCompatActivity {
                 if (id.isEmpty()) {
                     return;
                 }
-                viewModel.insert(new User(Integer.parseInt(id), "这个Id = " + id));
+                User user = new User();
+                user.id = Integer.parseInt(id);
+                user.name = "这个Id = " + id;
+                user.age = age;
+                age++;
+                viewModel.insert(user);
             }
         });
 
@@ -66,7 +71,12 @@ public class MainActivity extends AppCompatActivity {
                 if (id.isEmpty()) {
                     return;
                 }
-                viewModel.delete(new User(Integer.parseInt(id), "这个Id = " + id));
+
+                User user = new User();
+                user.id = Integer.parseInt(id);
+                user.name = "这个Id = " + id;
+
+                viewModel.delete(user);
             }
         });
 

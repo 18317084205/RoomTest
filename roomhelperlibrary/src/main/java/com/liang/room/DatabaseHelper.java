@@ -16,7 +16,7 @@ public class DatabaseHelper<T extends RoomDatabase> {
         mBuilder = Room.databaseBuilder(application, clazz, dbName);
     }
 
-    public DatabaseHelper updateDatabase(@NonNull Migration... migration) {
+    public DatabaseHelper<T> updateDatabase(@NonNull Migration... migration) {
         mBuilder.addMigrations(migration);
         return this;
     }

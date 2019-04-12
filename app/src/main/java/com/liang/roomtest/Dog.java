@@ -4,14 +4,13 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-@Entity(tableName = "user")
-public class User {
+@Entity
+public class Dog {
     @PrimaryKey
     @NonNull
-    public long id;
+    public int did;
 
     public String name;
 
-    public int age;
-
+    public int sex;
 }
