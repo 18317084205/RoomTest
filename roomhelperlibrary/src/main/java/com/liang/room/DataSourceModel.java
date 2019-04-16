@@ -16,8 +16,12 @@
 
 package com.liang.room;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.arch.paging.LivePagedListBuilder;
+import android.arch.paging.PagedList;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -25,11 +29,8 @@ import android.support.v4.app.FragmentActivity;
 import java.util.List;
 
 import io.reactivex.Completable;
-import io.reactivex.Flowable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -38,13 +39,27 @@ import io.reactivex.schedulers.Schedulers;
 public abstract class DataSourceModel<T, DAO extends BaseDao<T>> extends ViewModel implements Source<T, DAO> {
 
     private DAO dao;
-    private MutableLiveData<List<T>> listLiveData;
+    private LiveData<PagedList<T>> listLiveData;
     private MutableLiveData<T> liveData;
 
     public DataSourceModel(DAO dao) {
         this.dao = dao;
-        this.listLiveData = new MutableLiveData<>();
         this.liveData = new MutableLiveData<>();
+        this.listLiveData = new LivePagedListBuilder<>(
+                bindAllData(), getPageSize())
+                .setBoundaryCallback(dataBoundaryCallback)
+                .build();
+    }
+
+    protected abstract int getPageSize();
+
+    protected void onZeroItemsLoaded() {
+    }
+
+    protected void onItemAtFrontLoaded(T itemAtFront) {
+    }
+
+    protected void onItemAtEndLoaded(T itemAtEnd) {
     }
 
     @Override
@@ -52,28 +67,13 @@ public abstract class DataSourceModel<T, DAO extends BaseDao<T>> extends ViewMod
         return dao;
     }
 
-    public MutableLiveData<List<T>> getListLiveData() {
+    public LiveData<PagedList<T>> getListLiveData() {
         return listLiveData;
     }
 
     public MutableLiveData<T> getLiveData() {
         return liveData;
     }
-
-    @Override
-    public final Disposable bindAllData() {
-        return getDataList().subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<T>>() {
-                    @Override
-                    public void accept(List<T> ts) throws Exception {
-                        listLiveData.setValue(ts);
-                    }
-                });
-    }
-
-    @NonNull
-    protected abstract Flowable<List<T>> getDataList();
 
     @Override
     public final Disposable insert(@NonNull final T data) {
@@ -130,4 +130,25 @@ public abstract class DataSourceModel<T, DAO extends BaseDao<T>> extends ViewMod
                                                              Class<T> clazz) {
         return ViewModelProviders.of(activity, factory).get(clazz);
     }
+
+    final PagedList.BoundaryCallback<T> dataBoundaryCallback = new PagedList.BoundaryCallback<T>() {
+
+        @Override
+        @MainThread
+        public void onZeroItemsLoaded() {
+            DataSourceModel.this.onZeroItemsLoaded();
+        }
+
+        @Override
+        @MainThread
+        public void onItemAtFrontLoaded(@NonNull T itemAtFront) {
+            DataSourceModel.this.onItemAtFrontLoaded(itemAtFront);
+        }
+
+        @Override
+        @MainThread
+        public void onItemAtEndLoaded(@NonNull T itemAtEnd) {
+            DataSourceModel.this.onItemAtEndLoaded(itemAtEnd);
+        }
+    };
 }

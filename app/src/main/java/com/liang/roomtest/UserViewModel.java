@@ -1,6 +1,8 @@
 package com.liang.roomtest;
 
+import android.arch.paging.DataSource;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.liang.room.DataSourceModel;
 
@@ -18,10 +20,24 @@ public class UserViewModel extends DataSourceModel<User, UserDao> {
         super(dao);
     }
 
-    @NonNull
     @Override
-    protected Flowable<List<User>> getDataList() {
-        return getDao().loadAllUsers();
+    protected int getPageSize() {
+        return 20;
+    }
+
+    @Override
+    protected void onItemAtFrontLoaded(User itemAtFront) {
+        Log.e("UserViewModel", "onItemAtFrontLoaded: "+ itemAtFront.id);
+    }
+
+    @Override
+    protected void onZeroItemsLoaded() {
+        Log.e("UserViewModel", "onZeroItemsLoaded: ...");
+    }
+
+    @Override
+    protected void onItemAtEndLoaded(User itemAtEnd) {
+        Log.e("UserViewModel", "onItemAtEndLoaded: "+ itemAtEnd.id);
     }
 
     public Disposable getUser(int id) {
@@ -35,4 +51,8 @@ public class UserViewModel extends DataSourceModel<User, UserDao> {
                 });
     }
 
+    @Override
+    public DataSource.Factory<Integer, User> bindAllData() {
+        return getDao().loadAllUsers();
+    }
 }

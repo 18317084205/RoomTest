@@ -1,6 +1,7 @@
 package com.liang.roomtest;
 
 import android.arch.lifecycle.Observer;
+import android.arch.paging.PagedList;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     int age = 10;
+
     private void databaseSet() {
         viewDataBinding.button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,10 +82,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        viewModel.getListLiveData().observe(this, new Observer<List<User>>() {
+        viewModel.getListLiveData().observe(this, new Observer<PagedList<User>>() {
             @Override
-            public void onChanged(@Nullable List<User> users) {
-                adapter.setUsers(users);
+            public void onChanged(@Nullable PagedList<User> users) {
+                adapter.submitList(users);
             }
         });
 

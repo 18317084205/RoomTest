@@ -1,5 +1,6 @@
 package com.liang.room;
 
+import android.arch.paging.DataSource;
 import android.support.annotation.NonNull;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public interface Source<T, DAO extends BaseDao<T>> {
 
     DAO getDao();
 
-    Disposable bindAllData();
+    DataSource.Factory<Integer, T> bindAllData();
 
     Disposable insert(@NonNull T data);
 

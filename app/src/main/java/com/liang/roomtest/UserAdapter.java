@@ -16,25 +16,30 @@
 
 package com.liang.roomtest;
 
+import android.arch.paging.PagedListAdapter;
 import android.support.annotation.NonNull;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.List;
 
+public class UserAdapter extends PagedListAdapter<User, UserAdapter.UserViewHolder> {
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
+    protected UserAdapter() {
+        super(new DiffUtil.ItemCallback<User>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull User user, @NonNull User t1) {
+                return user.id == t1.id;
+            }
 
-    List<User> mUsers;
-
-    public void setUsers(List<User> users) {
-        if (users != null) {
-            mUsers = users;
-            notifyDataSetChanged();
-        }
+            @Override
+            public boolean areContentsTheSame(@NonNull User user, @NonNull User t1) {
+                return user == t1;
+            }
+        });
     }
 
     @Override
@@ -44,19 +49,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     @Override
     public void onBindViewHolder(UserViewHolder holder, int position) {
-        holder.uid.setText("id: " + mUsers.get(position).id);
-        holder.name.setText("name: " + mUsers.get(position).name);
-        holder.age.setText("age: " + mUsers.get(position).age);
-    }
-
-    @Override
-    public int getItemCount() {
-        return mUsers == null ? 0 : mUsers.size();
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return mUsers.get(position).id;
+        User user = getItem(position);
+        holder.uid.setText("id: " + user.id);
+        holder.name.setText("name: " + user.name);
+        holder.age.setText("age: " + user.age);
     }
 
     class UserViewHolder extends RecyclerView.ViewHolder {
@@ -72,4 +68,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             age = itemView.findViewById(R.id.textView2);
         }
     }
+
+
 }
