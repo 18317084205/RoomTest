@@ -24,6 +24,7 @@ import android.arch.paging.PagedList;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
 import java.util.List;
@@ -129,6 +130,12 @@ public abstract class DataSourceModel<T, DAO extends BaseDao<T>> extends ViewMod
                                                              @Nullable ViewModelFactory<T> factory,
                                                              Class<T> clazz) {
         return ViewModelProviders.of(activity, factory).get(clazz);
+    }
+
+    public static <T extends DataSourceModel> T getViewModel(@NonNull Fragment fragment,
+                                                             @Nullable ViewModelFactory<T> factory,
+                                                             Class<T> clazz) {
+        return ViewModelProviders.of(fragment, factory).get(clazz);
     }
 
     final PagedList.BoundaryCallback<T> dataBoundaryCallback = new PagedList.BoundaryCallback<T>() {
