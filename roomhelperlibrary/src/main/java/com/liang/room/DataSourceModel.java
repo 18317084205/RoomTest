@@ -50,7 +50,9 @@ public abstract class DataSourceModel<T, DAO extends BaseDao<T>> extends ViewMod
                 .build();
     }
 
-    protected abstract int getPageSize();
+    protected int getPageSize(){
+        return 20;
+    }
 
     protected void onZeroItemsLoaded() {
     }
