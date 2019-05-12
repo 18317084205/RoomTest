@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        viewModel.getListLiveData().observe(this, new Observer<PagedList<User>>() {
+        viewModel.getAllData().observe(this, new Observer<PagedList<User>>() {
             @Override
             public void onChanged(@Nullable PagedList<User> users) {
                 adapter.submitList(users);

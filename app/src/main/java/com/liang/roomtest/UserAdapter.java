@@ -16,6 +16,7 @@
 
 package com.liang.roomtest;
 
+import android.annotation.SuppressLint;
 import android.arch.paging.PagedListAdapter;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
@@ -35,6 +36,7 @@ public class UserAdapter extends PagedListAdapter<User, UserAdapter.UserViewHold
                 return user.id == t1.id;
             }
 
+            @SuppressLint("DiffUtilEquals")
             @Override
             public boolean areContentsTheSame(@NonNull User user, @NonNull User t1) {
                 return user == t1;

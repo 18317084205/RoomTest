@@ -1,20 +1,22 @@
 package com.liang.roomtest;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.paging.DataSource;
 import android.support.annotation.NonNull;
+import android.util.FloatProperty;
 import android.util.Log;
 
 import com.liang.room.DataSourceModel;
 
-import java.util.List;
-
-import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class UserViewModel extends DataSourceModel<User, UserDao> {
+
+    private MutableLiveData<User> liveData = new MutableLiveData<>();
 
     public UserViewModel(UserDao dao) {
         super(dao);
@@ -46,13 +48,17 @@ public class UserViewModel extends DataSourceModel<User, UserDao> {
                 .subscribe(new Consumer<User>() {
                     @Override
                     public void accept(User ts) throws Exception {
-                        getLiveData().setValue(ts);
+                        liveData.setValue(ts);
                     }
                 });
     }
 
+    public MutableLiveData<User> getLiveData() {
+        return liveData;
+    }
+
     @Override
     public DataSource.Factory<Integer, User> bindAllData() {
-        return getDao().loadAllUsers();
+        return getDao().queryAll();
     }
 }

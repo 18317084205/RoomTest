@@ -17,8 +17,8 @@
 package com.liang.room;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.arch.paging.DataSource;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
 import android.support.annotation.MainThread;
@@ -39,14 +39,12 @@ import io.reactivex.schedulers.Schedulers;
  */
 public abstract class DataSourceModel<T, DAO extends BaseDao<T>> extends ViewModel implements Source<T, DAO> {
 
-    private DAO dao;
-    private LiveData<PagedList<T>> listLiveData;
-    private MutableLiveData<T> liveData;
+    protected final DAO dao;
+    protected final LiveData<PagedList<T>> allData;
 
     public DataSourceModel(DAO dao) {
         this.dao = dao;
-        this.liveData = new MutableLiveData<>();
-        this.listLiveData = new LivePagedListBuilder<>(
+        this.allData = new LivePagedListBuilder<>(
                 bindAllData(), getPageSize())
                 .setBoundaryCallback(dataBoundaryCallback)
                 .build();
@@ -68,12 +66,13 @@ public abstract class DataSourceModel<T, DAO extends BaseDao<T>> extends ViewMod
         return dao;
     }
 
-    public LiveData<PagedList<T>> getListLiveData() {
-        return listLiveData;
+    public LiveData<PagedList<T>> getAllData() {
+        return allData;
     }
 
-    public MutableLiveData<T> getLiveData() {
-        return liveData;
+    @Override
+    public DataSource.Factory<Integer, T> bindAllData() {
+        return dao.queryAll();
     }
 
     @Override
@@ -91,7 +90,7 @@ public abstract class DataSourceModel<T, DAO extends BaseDao<T>> extends ViewMod
         return Completable.fromAction(new Action() {
             @Override
             public void run() {
-                getDao().insertAll(data);
+                getDao().insert(data);
             }
         }).subscribeOn(Schedulers.io()).subscribe();
     }
