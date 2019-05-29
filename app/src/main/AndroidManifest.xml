@@ -17,6 +17,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".RoomActivity" />
+        <activity android:name=".RoomObserveActivity" />
     </application>
 
 </manifest>

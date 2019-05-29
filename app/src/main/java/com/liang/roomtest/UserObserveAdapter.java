@@ -16,9 +16,12 @@
 
 package com.liang.roomtest;
 
+import android.annotation.SuppressLint;
+import android.arch.paging.PagedListAdapter;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,36 +29,35 @@ import android.view.ViewGroup;
 
 import com.liang.roomtest.databinding.LayoutItemBinding;
 
-import java.util.ArrayList;
-import java.util.List;
 
+public class UserObserveAdapter extends PagedListAdapter<User, UserObserveAdapter.UserViewHolder> {
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
+    protected UserObserveAdapter() {
+        super(new DiffUtil.ItemCallback<User>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull User user, @NonNull User t1) {
+                return user.id == t1.id;
+            }
 
-    private List<User> users = new ArrayList<>();
-
-    public void setUsers(List<User> users) {
-        this.users.clear();
-        this.users.addAll(users);
-        notifyDataSetChanged();
+            @SuppressLint("DiffUtilEquals")
+            @Override
+            public boolean areContentsTheSame(@NonNull User user, @NonNull User t1) {
+                return user == t1;
+            }
+        });
     }
 
     @Override
     public UserViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewDataBinding viewDataBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.layout_item, parent, false);
-        return new UserViewHolder(viewDataBinding.getRoot());
+        return new UserObserveAdapter.UserViewHolder(viewDataBinding.getRoot());
     }
 
     @Override
     public void onBindViewHolder(UserViewHolder holder, int position) {
         LayoutItemBinding viewDataBinding = DataBindingUtil.getBinding(holder.itemView);
-        viewDataBinding.setUser(users.get(position));
+        viewDataBinding.setUser(getItem(position));
         viewDataBinding.executePendingBindings();
-    }
-
-    @Override
-    public int getItemCount() {
-        return users.size();
     }
 
     class UserViewHolder extends RecyclerView.ViewHolder {

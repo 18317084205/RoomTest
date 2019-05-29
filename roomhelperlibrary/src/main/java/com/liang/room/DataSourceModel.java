@@ -16,14 +16,14 @@
 
 package com.liang.room;
 
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModel;
 import android.arch.paging.DataSource;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
@@ -37,29 +37,80 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Access point for managing data.
  */
-public abstract class DataSourceModel<T, DAO extends BaseDao<T>> extends ViewModel implements Source<T, DAO> {
+public abstract class DataSourceModel<T, DAO extends BaseDao<T>> extends AndroidViewModel implements Source<T, DAO> {
 
     protected final DAO dao;
-    protected final LiveData<PagedList<T>> allData;
+    protected final LiveData<PagedList<T>> allDataObserve;
+    private final DataSource<Integer, T> dataSource;
 
-    public DataSourceModel(DAO dao) {
-        this.dao = dao;
-        this.allData = new LivePagedListBuilder<>(
-                bindAllData(), getPageSize())
+    public DataSourceModel(@NonNull Application application) {
+        super(application);
+        this.dao = setDao();
+        PagedList.Config.Builder config = new PagedList.Config.Builder()
+                .setPageSize(setPageSize())
+                .setPrefetchDistance(setPrefetchDistance())
+                .setInitialLoadSizeHint(setInitialLoadSizeHint())
+                .setEnablePlaceholders(setEnablePlaceholders());
+        dataSource = bindAllData().create();
+        this.allDataObserve = new LivePagedListBuilder<>(
+                bindAllData(), config.build())
                 .setBoundaryCallback(dataBoundaryCallback)
                 .build();
     }
 
-    protected int getPageSize(){
+    protected abstract DAO setDao();
+
+    /**
+     * 每页加载多少数据，必须大于0，这里默认20
+     *
+     * @return 每页加载数据数量
+     */
+    protected int setPageSize() {
         return 20;
     }
 
+    /**
+     * 距底部还有几条数据时，加载下一页数据，默认为PageSize
+     *
+     * @return 距底部数据的数量
+     */
+    protected int setPrefetchDistance() {
+        return -1;
+    }
+
+    /**
+     * 第一次加载多少数据，必须是PageSize的倍数，默认为PageSize*3
+     *
+     * @return 第一次加载数据的数量 eg：PageSize*n
+     */
+    protected int setInitialLoadSizeHint() {
+        return -1;
+    }
+
+    /**
+     * 是否启用占位符，若为true，则视为固定数量的item
+     *
+     * @return 默认为true
+     */
+    protected boolean setEnablePlaceholders() {
+        return true;
+    }
+
+    /**
+     * 数据库没有查询到数据，可以通过触发网络等其他渠道加载数据到数据库
+     */
     protected void onZeroItemsLoaded() {
     }
 
+    /**
+     * 忽略，因为我们只附加到数据库中的内容
+     */
     protected void onItemAtFrontLoaded(T itemAtFront) {
     }
 
+    /**
+     * 数据已到达列表末尾，可以通过触发网络加载更多数据到数据库
+     */
     protected void onItemAtEndLoaded(T itemAtEnd) {
     }
 
@@ -68,12 +119,13 @@ public abstract class DataSourceModel<T, DAO extends BaseDao<T>> extends ViewMod
         return dao;
     }
 
-    public LiveData<PagedList<T>> getAllData() {
-        return allData;
+    @Override
+    public LiveData<PagedList<T>> getDataObserve() {
+        return allDataObserve;
     }
 
     @Override
-    public DataSource.Factory<Integer, T> bindAllData() {
+    public final DataSource.Factory<Integer, T> bindAllData() {
         return dao.queryAll();
     }
 
@@ -128,15 +180,13 @@ public abstract class DataSourceModel<T, DAO extends BaseDao<T>> extends ViewMod
     }
 
     public static <T extends DataSourceModel> T getViewModel(@NonNull FragmentActivity activity,
-                                                             @Nullable ViewModelFactory<T> factory,
                                                              Class<T> clazz) {
-        return ViewModelProviders.of(activity, factory).get(clazz);
+        return ViewModelProviders.of(activity).get(clazz);
     }
 
     public static <T extends DataSourceModel> T getViewModel(@NonNull Fragment fragment,
-                                                             @Nullable ViewModelFactory<T> factory,
                                                              Class<T> clazz) {
-        return ViewModelProviders.of(fragment, factory).get(clazz);
+        return ViewModelProviders.of(fragment).get(clazz);
     }
 
     final PagedList.BoundaryCallback<T> dataBoundaryCallback = new PagedList.BoundaryCallback<T>() {
@@ -159,4 +209,9 @@ public abstract class DataSourceModel<T, DAO extends BaseDao<T>> extends ViewMod
             DataSourceModel.this.onItemAtEndLoaded(itemAtEnd);
         }
     };
+
+    public void invalidate() {
+        dataSource.invalidate();
+    }
+
 }

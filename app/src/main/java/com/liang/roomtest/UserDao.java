@@ -6,8 +6,8 @@ import android.arch.persistence.room.Query;
 
 import com.liang.room.BaseDao;
 
-import java.util.List;
 
+import java.util.List;
 
 import io.reactivex.Flowable;
 
@@ -20,6 +20,10 @@ public interface UserDao extends BaseDao<User> {
 
     @Query("select * from user where id = :uid")
     DataSource.Factory<Integer, User> query(int uid);
+
+
+    @Query("SELECT * FROM user")
+    Flowable<List<User>> loadUsers();
 
     @Query("select * from user where id = :uid")
     Flowable<User> loadUser(int uid);

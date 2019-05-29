@@ -1,51 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/line"
-        app:layout_constraintEnd_toStartOf="@+id/textView1"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="id"/>
+    <data>
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintTop_toTopOf="@id/textView"
-        app:layout_constraintBottom_toBottomOf="@id/textView"
-        app:layout_constraintEnd_toStartOf="@+id/textView2"
-        app:layout_constraintStart_toEndOf="@+id/textView"
-        tools:text="name"/>
+        <variable
+            name="user"
+            type="com.liang.roomtest.User" />
+    </data>
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        android:layout_marginRight="50dp"
-        app:layout_constraintTop_toTopOf="@id/textView"
-        app:layout_constraintBottom_toBottomOf="@id/textView"
-        app:layout_constraintStart_toEndOf="@+id/textView1"
-        tools:text="30"/>
 
-    <TextView
-        android:id="@+id/line"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"
-        app:layout_constraintTop_toBottomOf="@id/textView"
-        app:layout_constraintBottom_toBottomOf="parent" />
-</android.support.constraint.ConstraintLayout>
+        android:layout_height="50dp">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="@{@string/user_id_format(user.id)}"
+            app:layout_constraintBottom_toTopOf="@id/line"
+            app:layout_constraintEnd_toStartOf="@+id/textView1"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="id" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:text="@{@string/user_name_format(user.name)}"
+            app:layout_constraintBottom_toBottomOf="@id/textView"
+            app:layout_constraintEnd_toStartOf="@+id/textView2"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView"
+            app:layout_constraintTop_toTopOf="@id/textView"
+            tools:text="name" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="50dp"
+            android:text="@{@string/user_age_format(user.age)}"
+            app:layout_constraintBottom_toBottomOf="@id/textView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView1"
+            app:layout_constraintTop_toTopOf="@id/textView"
+            tools:text="30" />
+
+        <TextView
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView" />
+    </android.support.constraint.ConstraintLayout>
+</layout>
+
+

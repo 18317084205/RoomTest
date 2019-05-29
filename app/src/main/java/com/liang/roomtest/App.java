@@ -8,13 +8,13 @@ import com.liang.room.DatabaseHelper;
 
 public class App extends Application {
 
-    public static AppDatabase appDatabase;
+    public AppDatabase appDatabase;
 
     @Override
     public void onCreate() {
         super.onCreate();
         appDatabase = new DatabaseHelper<>(this, AppDatabase.class, "test")
-                .updateDatabase(MIGRATION_1_2, MIGRATION_2_3)
+//                .updateDatabase(MIGRATION_1_2, MIGRATION_2_3)
                 .build();
     }
 
