@@ -1,6 +1,6 @@
 # room-helper
 
-#### Android日常开发中都会用到数据库，有些时候可能需要实时观察数据状态对列表进行刷新或是节省资源进行分页查询展示，Google在[Jetpack](https://github.com/18317084205/InjectTest)组件中提供了数据库（[ROOM](https://developer.android.google.cn/topic/libraries/architecture/room)）和分页（[Paging](https://developer.android.google.cn/topic/libraries/architecture/paging/)）来帮助我们处理以上问题，而room-helper是对Room和Paging的二次封装，让我们在开发中更简单的去处理数据库的操作。
+#### Android日常开发中都会用到数据库，有些时候可能需要实时观察数据状态对列表进行刷新或是节省资源进行分页查询展示，Google在[Jetpack](https://developer.android.google.cn/jetpack)组件中提供了数据库（[Room](https://developer.android.google.cn/topic/libraries/architecture/room)）和分页（[Paging](https://developer.android.google.cn/topic/libraries/architecture/paging/)）来帮助我们处理以上问题，而room-helper是对Room和Paging的二次封装，让我们在开发中更简单的去处理数据库的操作。
 
 # 使用room-helper
 #### 1. 在module的Gradle中加入
