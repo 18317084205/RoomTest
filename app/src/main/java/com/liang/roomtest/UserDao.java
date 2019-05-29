@@ -14,17 +14,15 @@ import io.reactivex.Flowable;
 @Dao
 public interface UserDao extends BaseDao<User> {
 
+    //必须重写此方法
     @Override
     @Query("SELECT * FROM user")
     DataSource.Factory<Integer, User> queryAll();
 
-    @Query("select * from user where id = :uid")
-    DataSource.Factory<Integer, User> query(int uid);
-
-
+    //自定义查询
     @Query("SELECT * FROM user")
     Flowable<List<User>> loadUsers();
-
+    //自定义查询
     @Query("select * from user where id = :uid")
     Flowable<User> loadUser(int uid);
 }

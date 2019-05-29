@@ -22,7 +22,6 @@ public class RoomObserveActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         viewDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_room_observe);
         viewModel = DataSourceModel.getViewModel(this, UserViewModel.class);
         adapter = new UserObserveAdapter();
