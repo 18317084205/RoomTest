@@ -8,7 +8,7 @@ import com.liang.room.DatabaseHelper;
 
 public class App extends Application {
 
-    public AppDatabase appDatabase;
+    public static AppDatabase appDatabase;
 
     @Override
     public void onCreate() {
@@ -32,5 +32,7 @@ public class App extends Application {
         }
     };
 
-
+    public static AppDatabase getAppDatabase() {
+        return appDatabase;
+    }
 }

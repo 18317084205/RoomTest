@@ -26,4 +26,7 @@ public interface Source<T, DAO extends BaseDao<T>> {
     Disposable update(@NonNull List<T> data);
 
     void delete(T data);
+
+    void delete(List<T> data);
+
 }

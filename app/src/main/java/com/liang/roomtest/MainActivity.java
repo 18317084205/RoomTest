@@ -39,4 +39,14 @@ public class MainActivity extends AppCompatActivity {
     public void goRoomObserve() {
         startActivity(new Intent(this, RoomObserveActivity.class));
     }
+
+    public void clearRoom() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                App.getAppDatabase().clearTable("user");
+            }
+        }).start();
+
+    }
 }

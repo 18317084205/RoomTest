@@ -179,6 +179,16 @@ public abstract class DataSourceModel<T, DAO extends BaseDao<T>> extends Android
         }).subscribeOn(Schedulers.io()).subscribe();
     }
 
+    @Override
+    public void delete(final List<T> data) {
+        Completable.fromAction(new Action() {
+            @Override
+            public void run() {
+                getDao().delete(data);
+            }
+        }).subscribeOn(Schedulers.io()).subscribe();
+    }
+
     public static <T extends DataSourceModel> T getViewModel(@NonNull FragmentActivity activity,
                                                              Class<T> clazz) {
         return ViewModelProviders.of(activity).get(clazz);

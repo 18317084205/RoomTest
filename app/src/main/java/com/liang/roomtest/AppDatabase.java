@@ -1,9 +1,10 @@
 package com.liang.roomtest;
 
 import android.arch.persistence.room.Database;
-import android.arch.persistence.room.RoomDatabase;
+
+import com.liang.room.JRoomDatabase;
 
 @Database(entities = {User.class}, version = 1)
-public abstract class AppDatabase extends RoomDatabase {
+public abstract class AppDatabase extends JRoomDatabase {
     public abstract UserDao userDao();
 }

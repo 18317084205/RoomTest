@@ -23,9 +23,13 @@ public interface BaseDao<T> {
     @Delete
     void delete(T data);
 
+    @Delete
+    void delete(List<T> data);
+
     @Update
     void update(T data);
 
     @Update
     void update(List<T> data);
+
 }
