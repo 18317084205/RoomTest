@@ -6,7 +6,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.migration.Migration;
 import android.support.annotation.NonNull;
 
-public class DatabaseHelper<T extends RoomDatabase> {
+public class DatabaseHelper<T extends JRoomDatabase> {
 
     private RoomDatabase.Builder<T> mBuilder;
 
